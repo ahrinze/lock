@@ -6,6 +6,7 @@ import { TokenService } from './token.service.js';
 import { PasswordService } from './password.service.js';
 import { SignUpRequestDto } from '../dto/sign-up.dto.js';
 import { Credential } from '../entities/credential.entity.js';
+import { Token } from '../entities/token.entity.js';
 
 @Injectable()
 export class AuthService {
@@ -15,6 +16,9 @@ export class AuthService {
 
     @InjectRepository(Credential)
     private credentialRepo: Repository<Credential>,
+
+    @InjectRepository(Token)
+    private tokenRepo: Repository<Token>,
 
     private passwordService: PasswordService,
     private tokenService: TokenService,
@@ -52,9 +56,22 @@ export class AuthService {
     this.tokenService.issue(user.id);
   }
 
-  async signIn() {}
+  async verifyEmail(token: string) {
+    // Verify token
+    const row = await this.tokenService.verify(token);
+    if (!row) {
+      throw new Error('Invalid token, token already used or expired');
+    }
 
-  async verify() {}
+    // if token: mark as used
+    row.usedAt = new Date(Date.now());
+    this.tokenRepo.save(row);
+
+    // return success
+    return { success: true };
+  }
+
+  async signIn() {}
 
   async invite() {}
 
