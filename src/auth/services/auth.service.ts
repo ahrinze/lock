@@ -1,5 +1,9 @@
 import { Repository } from 'typeorm';
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+} from '@nestjs/common';
 import { User } from '../../user/user.entity.js';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TokenService } from './token.service.js';
@@ -31,7 +35,9 @@ export class AuthService {
     // check for existing user
     const existingUser = await this.userRepo.findOneBy({ email: emailLower });
     if (existingUser) {
-      throw new Error(`User with this email, ${emailLower} already exists`);
+      throw new ConflictException(
+        `User with this email, '${emailLower}' already exists`,
+      );
     }
 
     // hash the password
@@ -54,21 +60,32 @@ export class AuthService {
 
     // Issue verification token to user
     this.tokenService.issue(user.id);
+
+    // return response
+    return {
+      success: true,
+      message: 'Account created! Verify your email to get full access.',
+    };
   }
 
   async verifyEmail(token: string) {
     // Verify token
     const row = await this.tokenService.verify(token);
     if (!row) {
-      throw new Error('Invalid token, token already used or expired');
+      throw new BadRequestException(
+        'Invalid token, token already used or expired',
+      );
     }
 
     // if token: mark as used
     row.usedAt = new Date(Date.now());
     this.tokenRepo.save(row);
 
-    // return success
-    return { success: true };
+    // return response
+    return {
+      success: true,
+      message: 'Your account has been verified.',
+    };
   }
 
   async signIn() {}
