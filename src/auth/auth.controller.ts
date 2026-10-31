@@ -1,14 +1,15 @@
-import { Post } from '@nestjs/common';
+import { Body, Post } from '@nestjs/common';
 import { Controller } from '@nestjs/common';
-import { AuthService } from './auth.service.js';
+import { AuthService } from './services/auth.service.js';
+import { SignUpRequestDto } from './dto/sign-up.dto.js';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('sign-up')
-  signUp() {
-    return this.authService.signUp;
+  signUp(@Body() signUpRequestDto: SignUpRequestDto) {
+    return this.authService.signUp(signUpRequestDto);
   }
 
   @Post('verify')

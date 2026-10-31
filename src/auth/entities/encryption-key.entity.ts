@@ -1,10 +1,21 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { User } from '../../user/user.entity.js';
 
 @Entity({ name: 'encryption_key' })
 export class EncryptionKey {
-  @PrimaryColumn({ name: 'user_id' })
-  userId: string;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-  @Column()
+  @OneToOne(() => User)
+  @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
+  user: User;
+
+  @Column({ nullable: false })
   dek: string;
 }

@@ -13,7 +13,7 @@ export const databaseConfig: DataSourceOptions = {
   password: 'postgres',
   database: 'lock',
   synchronize: false,
-  entities: [__dirname + '/entities/**/*{.js,.ts}'],
+  entities: [__dirname + '/../**/*.entity{.js,.ts}'],
   migrations: [__dirname + '/migrations/**/*{.js,.ts}'],
 };
 
