@@ -15,6 +15,9 @@ export class User {
   @Column({ unique: true, nullable: false })
   email: string;
 
+  @Column({ name: 'email_verified', nullable: false, default: false })
+  emailVerified: boolean;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

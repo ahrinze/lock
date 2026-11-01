@@ -3,16 +3,23 @@ import {
   CreateDateColumn,
   Entity,
   Index,
+  JoinColumn,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { User } from '../../user/user.entity.js';
 
 @Entity()
 export class Token {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'user_id', type: 'uuid', nullable: false, unique: true })
+  @Column({ name: 'user_id' })
   userId: string;
+
+  @OneToOne(() => User)
+  @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
+  user: User;
 
   @Column({ name: 'token_hash', nullable: false })
   @Index({ unique: true })

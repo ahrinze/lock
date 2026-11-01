@@ -8,7 +8,7 @@ import { Credential } from './entities/credential.entity.js';
 import { PasswordService } from './services/password.service.js';
 import { TokenService } from './services/token.service.js';
 import { Token } from './entities/token.entity.js';
-import { User } from '../user/user.entity.js';
+import { JwtService } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -16,6 +16,6 @@ import { User } from '../user/user.entity.js';
     TypeOrmModule.forFeature([Credential, EncryptionKey, Token]),
   ],
   controllers: [AuthController],
-  providers: [AuthService, PasswordService, TokenService],
+  providers: [AuthService, PasswordService, TokenService, JwtService],
 })
 export class AuthModule {}
